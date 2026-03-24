@@ -13,3 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
+import Foundation
+
+import GRDB
+
+public struct CacheDBDataEntity: Codable, TableRecord, FetchableRecord {
+
+  public enum CodingKeys: String, CodingKey  {
+    case rowId = "row_id"
+    case data = "data"
+    case isCompressed = "is_compressed"
+  }
+
+  public static let databaseTableName = "data"
+
+  public var rowId: String
+  public var data: Data?
+  public var isCompressed: Bool
+
+}

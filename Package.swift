@@ -15,19 +15,34 @@
 // limitations under the License.
 //
 
+// swiftlint:disable prefixed_toplevel_constant
+
 import PackageDescription
 
 let package = Package(
   name: "BoltAppleDocumentation",
+  platforms: [
+    .iOS(.v18),
+    .macCatalyst(.v26),
+    .macOS(.v26),
+  ],
   products: [
     .library(
       name: "BoltAppleDocumentation",
       targets: ["BoltAppleDocumentation"],
     ),
   ],
+  dependencies: [
+    .package(name: "BoltUtils", path: "../BoltUtils"),
+    .package(url: "https://github.com/groue/GRDB.swift.git", revision: "v6.29.3"),
+  ],
   targets: [
     .target(
-      name: "BoltAppleDocumentation"
+      name: "BoltAppleDocumentation",
+      dependencies: [
+        .product(name: "GRDB", package: "GRDB.swift"),
+        "BoltUtils",
+      ]
     ),
     .testTarget(
       name: "BoltAppleDocumentationTests",
@@ -35,3 +50,5 @@ let package = Package(
     ),
   ]
 )
+
+// swiftlint:enable prefixed_toplevel_constant
