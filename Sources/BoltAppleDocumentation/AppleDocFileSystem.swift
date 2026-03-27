@@ -40,20 +40,12 @@ public struct AppleDocFileSystem {
   }
 
   public static func documentationData(
-    forRootPath rootPath: String,
-    fileID: Int,
+    forData data: Data,
     offset: Int,
     length: Int,
     isCompressed: Bool
   ) throws -> Data {
-    let filePath = rootPath.appendingPathComponent("fs/\(fileID)")
-    let cachedData: Data
-    do {
-      cachedData = try Data(contentsOf: URL(fileURLWithPath: filePath))
-    } catch {
-      throw Error.dataFileloadFailed(path: filePath, underlyingError: error)
-    }
-    var subData = cachedData
+    var subData = data
     if isCompressed {
       do {
         subData = try subData.brotliDecompressed()
@@ -65,6 +57,23 @@ public struct AppleDocFileSystem {
       throw Error.invalidDataRange
     }
     return subData[offset..<offset + length]
+  }
+
+  public static func documentationData(
+    forRootPath rootPath: String,
+    fileID: Int,
+    offset: Int,
+    length: Int,
+    isCompressed: Bool
+  ) throws -> Data {
+    let filePath = rootPath.appendingPathComponent("fs/\(fileID)")
+    let data: Data
+    do {
+      data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+    } catch {
+      throw Error.dataFileloadFailed(path: filePath, underlyingError: error)
+    }
+    return try documentationData(forData: data, offset: offset, length: length, isCompressed: isCompressed)
   }
 
 }
