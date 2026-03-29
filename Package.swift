@@ -33,7 +33,6 @@ let package = Package(
     ),
   ],
   dependencies: [
-    .package(name: "BoltUtils", path: "../BoltUtils"),
     .package(url: "https://github.com/groue/GRDB.swift.git", revision: "v6.29.3"),
   ],
   targets: [
@@ -41,7 +40,6 @@ let package = Package(
       name: "BoltAppleDocumentation",
       dependencies: [
         .product(name: "GRDB", package: "GRDB.swift"),
-        "BoltUtils",
       ]
     ),
     .testTarget(

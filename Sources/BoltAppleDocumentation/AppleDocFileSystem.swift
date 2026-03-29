@@ -16,7 +16,6 @@
 
 import Foundation
 
-import BoltUtils
 
 public struct AppleDocFileSystem {
 
@@ -66,7 +65,7 @@ public struct AppleDocFileSystem {
     length: Int,
     isCompressed: Bool
   ) throws -> Data {
-    let filePath = rootPath.appendingPathComponent("fs/\(fileID)")
+    let filePath = (rootPath as NSString).appendingPathComponent("fs/\(fileID)")
     let data: Data
     do {
       data = try Data(contentsOf: URL(fileURLWithPath: filePath))
