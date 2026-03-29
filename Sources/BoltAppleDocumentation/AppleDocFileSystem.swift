@@ -44,18 +44,11 @@ public struct AppleDocFileSystem {
     length: Int,
     isCompressed: Bool
   ) throws -> Data {
-    var subData = data
-    if isCompressed {
-      do {
-        subData = try subData.brotliDecompressed()
-      } catch {
-        throw Error.decompressFailed(underlyingError: error)
-      }
-    }
-    guard offset >= 0, length >= 0, length <= subData.count - offset else {
+    let data = try documentationRawData(forData: data, isCompressed: isCompressed)
+    guard offset >= 0, length >= 0, length <= data.count - offset else {
       throw Error.invalidDataRange
     }
-    return subData[offset..<offset + length]
+    return data[offset..<offset + length]
   }
 
   public static func documentationData(
@@ -73,6 +66,28 @@ public struct AppleDocFileSystem {
       throw Error.dataFileloadFailed(path: filePath, underlyingError: error)
     }
     return try documentationData(forData: data, offset: offset, length: length, isCompressed: isCompressed)
+  }
+
+  public static func documentationRawData(forRootPath rootPath: String, fileID: Int, isCompressed: Bool) throws -> Data {
+    let filePath = (rootPath as NSString).appendingPathComponent("fs/\(fileID)")
+    let data: Data
+    do {
+      data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+    } catch {
+      throw Error.dataFileloadFailed(path: filePath, underlyingError: error)
+    }
+    return try documentationRawData(forData: data, isCompressed: isCompressed)
+  }
+
+  public static func documentationRawData(forData data: Data, isCompressed: Bool) throws -> Data {
+    guard isCompressed else {
+      return data
+    }
+    do {
+      return try data.brotliDecompressed()
+    } catch {
+      throw Error.decompressFailed(underlyingError: error)
+    }
   }
 
 }
