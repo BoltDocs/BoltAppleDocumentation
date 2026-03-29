@@ -28,7 +28,7 @@ public struct CacheDBDataEntity: Codable, TableRecord, FetchableRecord {
 
   public static let databaseTableName = "data"
 
-  public var rowId: String
+  public var rowId: Int
   public var data: Data?
   public var isCompressed: Bool
 
