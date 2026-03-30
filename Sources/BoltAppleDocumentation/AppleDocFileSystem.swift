@@ -16,7 +16,6 @@
 
 import Foundation
 
-
 public struct AppleDocFileSystem {
 
   public enum Error: LocalizedError {
